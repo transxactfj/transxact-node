@@ -49,6 +49,14 @@ jobs:
     needs: [ compile, test ]
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+    # Trusted publishing (OIDC) instead of a long-lived NPM_TOKEN — npm now
+    # blocks classic tokens from bypassing 2FA on publish (EOTP), and this is
+    # its recommended replacement. Requires npm >=11.5.1 (bundled with
+    # Node 24+) and a trusted publisher registered on the package's npmjs.com
+    # settings for this repo + workflow file.
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - name: Checkout repo
         uses: actions/checkout@v6
@@ -69,7 +77,7 @@ jobs:
 
       - name: Publish to npm
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          npm install -g npm@latest
           if [[ ${GITHUB_REF} == *alpha* ]]; then
             npm publish --access public --tag alpha
           elif [[ ${GITHUB_REF} == *beta* ]]; then
@@ -85,5 +93,3 @@ jobs:
               npm publish --access public
             fi
           fi
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
