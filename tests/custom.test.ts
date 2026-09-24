@@ -11,7 +11,7 @@ import { verifyWebhookSignature } from "../src/webhooks";
 
 function sign(secret: string, timestamp: number, payload: string): string {
     const hmac = createHmac("sha256", secret).update(`${timestamp}.${payload}`).digest("hex");
-    return `${timestamp}.${hmac}`;
+    return `t=${timestamp},v1=${hmac}`;
 }
 
 describe("verifyWebhookSignature", () => {
@@ -19,17 +19,17 @@ describe("verifyWebhookSignature", () => {
     const payload = '{"type":"checkout_session.succeeded"}';
 
     it("accepts a validly signed, fresh payload", () => {
-        const header = sign(secret, Math.floor(Date.now() / 1000), payload);
+        const header = sign(secret, Date.now(), payload);
         expect(verifyWebhookSignature(payload, header, secret)).toBe(true);
     });
 
     it("rejects a payload signed with the wrong secret", () => {
-        const header = sign("wrong-secret", Math.floor(Date.now() / 1000), payload);
+        const header = sign("wrong-secret", Date.now(), payload);
         expect(verifyWebhookSignature(payload, header, secret)).toBe(false);
     });
 
     it("rejects a signature older than the tolerance window", () => {
-        const staleTimestamp = Math.floor(Date.now() / 1000) - 10 * 60;
+        const staleTimestamp = Date.now() - 10 * 60 * 1000;
         const header = sign(secret, staleTimestamp, payload);
         expect(verifyWebhookSignature(payload, header, secret)).toBe(false);
     });
