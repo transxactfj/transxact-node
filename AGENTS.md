@@ -6,4 +6,4 @@ The one hand-written exception: `verifyWebhookSignature()` (`src/webhooks.ts`) a
 
 Retry/backoff behavior is Fern generator config, not source here — change it in the Fern project config in `transxactfj/transxact`, not in this repo.
 
-To regenerate: from `transxactfj/transxact`, run `fern generate --group node` inside `fern/` (requires `FERN_TOKEN`; the actual push goes through the Fern GitHub App installed on this repo).
+To regenerate: run the "Generate SDKs" workflow (`.github/workflows/sdk-generate.yml`) in `transxactfj/transxact`, group `node`, with the semver to release — it runs `fern generate --group node --version <semver>`, which commits, tags `v<semver>`, and publishes to npm (`@transxact/node`) in one step. (Equivalent local command: `fern generate --group node --version <semver>` inside `fern/`, requires `FERN_TOKEN` + `NPM_TOKEN`.)
