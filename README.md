@@ -1,7 +1,7 @@
 # Transxact TypeScript Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Ftransxactfj%2Ftransxact-node)
-[![npm shield](https://img.shields.io/npm/v/)](https://www.npmjs.com/package/)
+[![npm shield](https://img.shields.io/npm/v/@transxact/node)](https://www.npmjs.com/package/@transxact/node)
 
 The Transxact TypeScript library provides convenient access to the Transxact APIs from TypeScript.
 
@@ -27,7 +27,7 @@ The Transxact TypeScript library provides convenient access to the Transxact API
 ## Installation
 
 ```sh
-npm i -s 
+npm i -s @transxact/node
 ```
 
 ## Reference
@@ -39,7 +39,7 @@ A full reference for this library is available [here](https://github.com/transxa
 Instantiate and use the client with the following:
 
 ```typescript
-import { TransxactApiClient } from "";
+import { TransxactApiClient } from "@transxact/node";
 
 const client = new TransxactApiClient({ baseUrl: "YOUR_BASE_URL" });
 await client.postV1CheckoutSessions({
@@ -55,7 +55,7 @@ The SDK exports all request and response types as TypeScript interfaces. Simply 
 following namespace:
 
 ```typescript
-import { TransxactApi } from "TransxactApi";
+import { TransxactApi } from "@transxact/node";
 
 const request: TransxactApi.CreateCheckoutSessionRequest = {
     ...
@@ -68,7 +68,7 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```typescript
-import { TransxactApiError } from "TransxactApi";
+import { TransxactApiError } from "@transxact/node";
 
 try {
     await client.postV1CheckoutSessions(...);
@@ -89,7 +89,7 @@ try {
 If you would like to send additional headers as part of the request, use the `headers` request option.
 
 ```typescript
-import { TransxactApiClient } from "TransxactApi";
+import { TransxactApiClient } from "@transxact/node";
 
 const client = new TransxactApiClient({
     ...
@@ -184,7 +184,7 @@ console.log(rawResponse.headers['X-My-Header']);
 The SDK supports logging. You can configure the logger by passing in a `logging` object to the client options.
 
 ```typescript
-import { TransxactApiClient, logging } from "TransxactApi";
+import { TransxactApiClient, logging } from "@transxact/node";
 
 const client = new TransxactApiClient({
     ...
