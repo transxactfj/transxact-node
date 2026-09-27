@@ -14,7 +14,7 @@ describe("TransxactApiClient", () => {
             status: "pending",
             amount: 5000,
             currency: "FJD",
-            hostedUrl: "https://checkout.transxact.com/c/cs_3f9c2b1a",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
         };
 
         server
@@ -94,7 +94,7 @@ describe("TransxactApiClient", () => {
             status: "pending",
             amount: 5000,
             currency: "FJD",
-            hostedUrl: "https://checkout.transxact.com/c/cs_3f9c2b1a",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
         };
 
         server
