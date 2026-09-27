@@ -11,6 +11,10 @@ export interface CheckoutSession {
     currency: CheckoutSession.Currency;
     /** Transxact-hosted URL to redirect the Customer to. */
     hostedUrl: string;
+    /** Your own key/value data from creation; empty object if none was set. */
+    metadata: Record<string, string>;
+    /** Unix ms timestamp after which no payment can start; a still-pending session is then cancelled. */
+    expiresAt: number;
 }
 
 export namespace CheckoutSession {

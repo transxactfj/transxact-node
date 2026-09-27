@@ -103,6 +103,57 @@ await client.getV1CheckoutSessionsId({
 </dl>
 </details>
 
+<details><summary><code>client.<a href="/src/Client.ts">postV1CheckoutSessionsIdCancel</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
+<dl>
+<dd>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.postV1CheckoutSessionsIdCancel({
+    id: "cs_3f9c2b1a"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.PostV1CheckoutSessionsIdCancelRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `TransxactApiClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.<a href="/src/Client.ts">getV1MerchantsMe</a>() -> TransxactApi.Merchant</code></summary>
 <dl>
 <dd>

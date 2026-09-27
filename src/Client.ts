@@ -166,6 +166,81 @@ export class TransxactApiClient {
     }
 
     /**
+     * @param {TransxactApi.PostV1CheckoutSessionsIdCancelRequest} request
+     * @param {TransxactApiClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link TransxactApi.NotFoundError}
+     * @throws {@link TransxactApi.ConflictError}
+     * @throws {@link errors.TransxactApiError}
+     * @throws {@link errors.TransxactApiTimeoutError}
+     *
+     * @example
+     *     await client.postV1CheckoutSessionsIdCancel({
+     *         id: "cs_3f9c2b1a"
+     *     })
+     */
+    public postV1CheckoutSessionsIdCancel(
+        request: TransxactApi.PostV1CheckoutSessionsIdCancelRequest,
+        requestOptions?: TransxactApiClient.RequestOptions,
+    ): core.HttpResponsePromise<TransxactApi.CheckoutSession> {
+        return core.HttpResponsePromise.fromPromise(this.__postV1CheckoutSessionsIdCancel(request, requestOptions));
+    }
+
+    private async __postV1CheckoutSessionsIdCancel(
+        request: TransxactApi.PostV1CheckoutSessionsIdCancelRequest,
+        requestOptions?: TransxactApiClient.RequestOptions,
+    ): Promise<core.WithRawResponse<TransxactApi.CheckoutSession>> {
+        const { id } = request;
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)),
+                `v1/checkout-sessions/${core.url.encodePathParam(id)}/cancel`,
+            ),
+            method: "POST",
+            headers: _headers,
+            queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return { data: _response.body as TransxactApi.CheckoutSession, rawResponse: _response.rawResponse };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 404:
+                    throw new TransxactApi.NotFoundError(
+                        _response.error.body as TransxactApi.Error_,
+                        _response.rawResponse,
+                    );
+                case 409:
+                    throw new TransxactApi.ConflictError(
+                        _response.error.body as TransxactApi.Error_,
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TransxactApiError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(
+            _response.error,
+            _response.rawResponse,
+            "POST",
+            "/v1/checkout-sessions/{id}/cancel",
+        );
+    }
+
+    /**
      * @param {TransxactApiClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link TransxactApi.UnauthorizedError}

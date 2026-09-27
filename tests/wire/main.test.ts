@@ -15,6 +15,8 @@ describe("TransxactApiClient", () => {
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: { orderId: "9912" },
+            expiresAt: 1717086400000,
         };
 
         server
@@ -95,6 +97,8 @@ describe("TransxactApiClient", () => {
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: { orderId: "9912" },
+            expiresAt: 1717086400000,
         };
 
         server
@@ -130,6 +134,76 @@ describe("TransxactApiClient", () => {
                 id: "id",
             });
         }).rejects.toThrow(TransxactApi.NotFoundError);
+    });
+
+    test("postV1CheckoutSessionsIdCancel (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+
+        const rawResponseBody = {
+            id: "cs_3f9c2b1a",
+            status: "pending",
+            amount: 5000,
+            currency: "FJD",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: { orderId: "9912" },
+            expiresAt: 1717086400000,
+        };
+
+        server
+            .mockEndpoint()
+            .post("/v1/checkout-sessions/cs_3f9c2b1a/cancel")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.postV1CheckoutSessionsIdCancel({
+            id: "cs_3f9c2b1a",
+        });
+        expect(response).toEqual(rawResponseBody);
+    });
+
+    test("postV1CheckoutSessionsIdCancel (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .post("/v1/checkout-sessions/id/cancel")
+            .respondWith()
+            .statusCode(404)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.postV1CheckoutSessionsIdCancel({
+                id: "id",
+            });
+        }).rejects.toThrow(TransxactApi.NotFoundError);
+    });
+
+    test("postV1CheckoutSessionsIdCancel (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .post("/v1/checkout-sessions/id/cancel")
+            .respondWith()
+            .statusCode(409)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.postV1CheckoutSessionsIdCancel({
+                id: "id",
+            });
+        }).rejects.toThrow(TransxactApi.ConflictError);
     });
 
     test("getV1MerchantsMe (1)", async () => {

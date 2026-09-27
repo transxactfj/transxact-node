@@ -15,6 +15,14 @@ export interface CreateCheckoutSessionRequest {
     amount: number;
     /** Always FJD in v1. */
     currency: CreateCheckoutSessionRequest.Currency;
+    /** Where the hosted checkout sends the Customer after the payment succeeds. HTTPS only. Transxact appends `session_id=<Checkout Session id>`; confirm the outcome with GET /v1/checkout-sessions/{id} rather than trusting the redirect. */
+    successUrl?: string;
+    /** Where the hosted checkout sends the Customer if they cancel or the payment doesn't go through. HTTPS only. Transxact appends `session_id=<Checkout Session id>`; confirm the outcome with GET /v1/checkout-sessions/{id} rather than trusting the redirect. */
+    cancelUrl?: string;
+    /** Up to 20 string key/value pairs (keys ≤40 chars, values ≤500) for matching the session to your own records. Returned on retrieve and in webhooks; never shown to the Customer. Don't put secrets or personal data here. */
+    metadata?: Record<string, string>;
+    /** Unix ms timestamp, 30 minutes to 24 hours from now, after which the session can't be paid and is cancelled. Defaults to 24 hours. */
+    expiresAt?: number;
 }
 
 export namespace CreateCheckoutSessionRequest {
