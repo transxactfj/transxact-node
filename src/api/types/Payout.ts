@@ -7,6 +7,12 @@ export interface Payout {
     amount: number;
     /** Business -> bank_transfer, Individual -> wallet. */
     rail: Payout.Rail;
+    /** pending until the money reaches your payout destination, then paid. failed means the transfer didn't go through; the amount returns to your balance and goes out in the next Payout. Test mode Payouts are always paid. */
+    status: Payout.Status;
+    /** Unix ms timestamp the Payout was paid, or null. */
+    paidAt: number | null;
+    /** Why the transfer failed, when status is failed. */
+    failureReason: string | null;
     /** Unix ms timestamp of the settlement run that created this Payout. */
     createdAt: number;
 }
@@ -18,4 +24,11 @@ export namespace Payout {
         Wallet: "wallet",
     } as const;
     export type Rail = (typeof Rail)[keyof typeof Rail];
+    /** pending until the money reaches your payout destination, then paid. failed means the transfer didn't go through; the amount returns to your balance and goes out in the next Payout. Test mode Payouts are always paid. */
+    export const Status = {
+        Pending: "pending",
+        Paid: "paid",
+        Failed: "failed",
+    } as const;
+    export type Status = (typeof Status)[keyof typeof Status];
 }

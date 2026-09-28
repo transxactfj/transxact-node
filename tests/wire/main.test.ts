@@ -236,7 +236,17 @@ describe("TransxactApiClient", () => {
         const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
 
         const rawResponseBody = {
-            data: [{ id: "po_3f9c2b1a", amount: 4800, rail: "bank_transfer", createdAt: 1717000000000 }],
+            data: [
+                {
+                    id: "po_3f9c2b1a",
+                    amount: 4800,
+                    rail: "bank_transfer",
+                    status: "pending",
+                    paidAt: 1717100000000,
+                    failureReason: "failureReason",
+                    createdAt: 1717000000000,
+                },
+            ],
             hasMore: true,
         };
 
@@ -266,7 +276,15 @@ describe("TransxactApiClient", () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
 
-        const rawResponseBody = { id: "po_3f9c2b1a", amount: 4800, rail: "bank_transfer", createdAt: 1717000000000 };
+        const rawResponseBody = {
+            id: "po_3f9c2b1a",
+            amount: 4800,
+            rail: "bank_transfer",
+            status: "pending",
+            paidAt: 1717100000000,
+            failureReason: "failureReason",
+            createdAt: 1717000000000,
+        };
 
         server
             .mockEndpoint()
