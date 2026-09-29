@@ -11,7 +11,7 @@
 export interface CreateCheckoutSessionRequest {
     /** Client-generated key; a repeated key returns the original session. */
     "idempotency-key": string;
-    /** Amount to charge, in FJD cents (minor units). */
+    /** Amount to charge, in FJD cents (minor units). Must be under FJD 5,000.00 (at most 499999), in Test mode and Live mode alike. */
     amount: number;
     /** Always FJD in v1. */
     currency: CreateCheckoutSessionRequest.Currency;

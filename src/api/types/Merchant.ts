@@ -7,6 +7,8 @@ export interface Merchant {
     mode: Merchant.Mode;
     /** Earned balance not yet swept into a Payout, in FJD cents (minor units). */
     balance: number;
+    /** When Payouts are made, in UTC: `daily`; `weekly` on Mondays (the default); `fortnightly` on every other Monday; `monthly` on the 1st; or `manual`, where a Payout is made only when the Merchant asks for one from the dashboard. Set on the dashboard. */
+    payoutSchedule: Merchant.PayoutSchedule;
 }
 
 export namespace Merchant {
@@ -22,4 +24,13 @@ export namespace Merchant {
         Live: "live",
     } as const;
     export type Mode = (typeof Mode)[keyof typeof Mode];
+    /** When Payouts are made, in UTC: `daily`; `weekly` on Mondays (the default); `fortnightly` on every other Monday; `monthly` on the 1st; or `manual`, where a Payout is made only when the Merchant asks for one from the dashboard. Set on the dashboard. */
+    export const PayoutSchedule = {
+        Daily: "daily",
+        Weekly: "weekly",
+        Fortnightly: "fortnightly",
+        Monthly: "monthly",
+        Manual: "manual",
+    } as const;
+    export type PayoutSchedule = (typeof PayoutSchedule)[keyof typeof PayoutSchedule];
 }

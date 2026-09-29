@@ -40,7 +40,32 @@ describe("TransxactApiClient", () => {
     test("postV1CheckoutSessions (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
-        const rawRequestBody = { amount: 1, currency: "FJD" };
+        const rawRequestBody = { amount: 499999, currency: "FJD" };
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .post("/v1/checkout-sessions")
+            .header("idempotency-key", "idempotencyKey")
+            .jsonBody(rawRequestBody)
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.postV1CheckoutSessions({
+                "idempotency-key": "idempotencyKey",
+                amount: 499999,
+                currency: "FJD",
+            });
+        }).rejects.toThrow(TransxactApi.BadRequestError);
+    });
+
+    test("postV1CheckoutSessions (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const rawRequestBody = { amount: 499999, currency: "FJD" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
         server
@@ -56,16 +81,16 @@ describe("TransxactApiClient", () => {
         await expect(async () => {
             return await client.postV1CheckoutSessions({
                 "idempotency-key": "idempotencyKey",
-                amount: 1,
+                amount: 499999,
                 currency: "FJD",
             });
         }).rejects.toThrow(TransxactApi.UnauthorizedError);
     });
 
-    test("postV1CheckoutSessions (3)", async () => {
+    test("postV1CheckoutSessions (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
-        const rawRequestBody = { amount: 1, currency: "FJD" };
+        const rawRequestBody = { amount: 499999, currency: "FJD" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
         server
@@ -81,7 +106,7 @@ describe("TransxactApiClient", () => {
         await expect(async () => {
             return await client.postV1CheckoutSessions({
                 "idempotency-key": "idempotencyKey",
-                amount: 1,
+                amount: 499999,
                 currency: "FJD",
             });
         }).rejects.toThrow(TransxactApi.ConflictError);
@@ -210,7 +235,7 @@ describe("TransxactApiClient", () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
 
-        const rawResponseBody = { tier: "business", mode: "test", balance: 4800 };
+        const rawResponseBody = { tier: "business", mode: "test", balance: 4800, payoutSchedule: "daily" };
 
         server.mockEndpoint().get("/v1/merchants/me").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
 

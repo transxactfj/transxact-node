@@ -26,6 +26,7 @@ export class TransxactApiClient {
      * @param {TransxactApi.CreateCheckoutSessionRequest} request
      * @param {TransxactApiClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link TransxactApi.BadRequestError}
      * @throws {@link TransxactApi.UnauthorizedError}
      * @throws {@link TransxactApi.ConflictError}
      * @throws {@link errors.TransxactApiError}
@@ -79,6 +80,11 @@ export class TransxactApiClient {
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 400:
+                    throw new TransxactApi.BadRequestError(
+                        _response.error.body as TransxactApi.Error_,
+                        _response.rawResponse,
+                    );
                 case 401:
                     throw new TransxactApi.UnauthorizedError(
                         _response.error.body as TransxactApi.Error_,
