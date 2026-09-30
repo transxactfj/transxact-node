@@ -2,7 +2,7 @@
 
 import * as TransxactApi from "./api/index.js";
 import type { BaseClientOptions, BaseRequestOptions } from "./BaseClient.js";
-import { type NormalizedClientOptions, normalizeClientOptions } from "./BaseClient.js";
+import { type NormalizedClientOptionsWithAuth, normalizeClientOptionsWithAuth } from "./BaseClient.js";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "./core/headers.js";
 import * as core from "./core/index.js";
 import { mergeAdditionalBodyParameters } from "./core/requestBody.js";
@@ -16,10 +16,10 @@ export declare namespace TransxactApiClient {
 }
 
 export class TransxactApiClient {
-    protected readonly _options: NormalizedClientOptions<TransxactApiClient.Options>;
+    protected readonly _options: NormalizedClientOptionsWithAuth<TransxactApiClient.Options>;
 
     constructor(options: TransxactApiClient.Options) {
-        this._options = normalizeClientOptions(options);
+        this._options = normalizeClientOptionsWithAuth(options);
     }
 
     /**
@@ -51,7 +51,9 @@ export class TransxactApiClient {
         requestOptions?: TransxactApiClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.CheckoutSession>> {
         const { "idempotency-key": idempotencyKey, ..._body } = request;
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
             this._options?.headers,
             mergeOnlyDefinedHeaders({ "idempotency-key": idempotencyKey }),
             requestOptions?.headers,
@@ -132,7 +134,12 @@ export class TransxactApiClient {
         requestOptions?: TransxactApiClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.CheckoutSession>> {
         const { id } = request;
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -197,7 +204,12 @@ export class TransxactApiClient {
         requestOptions?: TransxactApiClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.CheckoutSession>> {
         const { id } = request;
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -265,7 +277,12 @@ export class TransxactApiClient {
     private async __getV1MerchantsMe(
         requestOptions?: TransxactApiClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.Merchant>> {
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -334,7 +351,12 @@ export class TransxactApiClient {
             starting_after: startingAfter,
             limit,
         };
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -402,7 +424,12 @@ export class TransxactApiClient {
         requestOptions?: TransxactApiClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.Payout>> {
         const { id } = request;
-        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(this._options?.headers, requestOptions?.headers);
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
         const _response = await core.fetcher({
             url: core.url.join(
                 (await core.Supplier.get(this._options.baseUrl)) ??
@@ -466,6 +493,7 @@ export class TransxactApiClient {
                 maxRetries: this._options.maxRetries,
                 fetch: this._options.fetch,
                 logging: this._options.logging,
+                getAuthHeaders: async () => (await this._options.authProvider.getAuthRequest()).headers,
             },
             requestOptions,
         );

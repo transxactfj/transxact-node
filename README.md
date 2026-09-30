@@ -41,7 +41,7 @@ Instantiate and use the client with the following:
 ```typescript
 import { TransxactApiClient } from "@transxact/node";
 
-const client = new TransxactApiClient({ baseUrl: "YOUR_BASE_URL" });
+const client = new TransxactApiClient({ baseUrl: "YOUR_BASE_URL", token: "YOUR_TOKEN" });
 await client.postV1CheckoutSessions({
     "idempotency-key": "a1b2c3d4-order-9912",
     amount: 5000,

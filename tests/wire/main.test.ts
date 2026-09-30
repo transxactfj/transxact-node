@@ -7,7 +7,7 @@ import { mockServerPool } from "../mock-server/MockServerPool";
 describe("TransxactApiClient", () => {
     test("postV1CheckoutSessions (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 5000, currency: "FJD" };
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
@@ -39,7 +39,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessions (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -64,7 +64,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessions (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -89,7 +89,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessions (4)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -114,7 +114,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1CheckoutSessionsId (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
@@ -142,7 +142,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1CheckoutSessionsId (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -163,7 +163,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessionsIdCancel (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
@@ -191,7 +191,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessionsIdCancel (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -212,7 +212,7 @@ describe("TransxactApiClient", () => {
 
     test("postV1CheckoutSessionsIdCancel (3)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -233,7 +233,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1MerchantsMe (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { tier: "business", mode: "test", balance: 4800, payoutSchedule: "daily" };
 
@@ -245,7 +245,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1MerchantsMe (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -258,7 +258,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1Payouts (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
             data: [
@@ -286,7 +286,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1Payouts (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
@@ -299,7 +299,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1PayoutsId (1)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = {
             id: "po_3f9c2b1a",
@@ -327,7 +327,7 @@ describe("TransxactApiClient", () => {
 
     test("getV1PayoutsId (2)", async () => {
         const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, environment: server.baseUrl });
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
