@@ -7,7 +7,7 @@
  *         limit: "10"
  *     }
  */
-export interface GetV1PayoutsRequest {
+export interface ListPayoutsRequest {
     /** Cursor: return Payouts after this id. */
     starting_after?: string;
     /** Max rows to return (default 10, max 100). */

@@ -1,6 +1,6 @@
 {
     "name": "@transxact/node",
-    "version": "0.4.36",
+    "version": "0.4.37",
     "private": false,
     "repository": {
         "type": "git",
@@ -11,6 +11,17 @@
     "module": "./dist/esm/index.mjs",
     "types": "./dist/cjs/index.d.ts",
     "exports": {
+        "./webhooks": {
+            "import": {
+                "types": "./dist/esm/webhooks.d.mts",
+                "default": "./dist/esm/webhooks.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/webhooks.d.ts",
+                "default": "./dist/cjs/webhooks.js"
+            },
+            "default": "./dist/cjs/webhooks.js"
+        },
         ".": {
             "import": {
                 "types": "./dist/esm/index.d.mts",
@@ -21,6 +32,39 @@
                 "default": "./dist/cjs/index.js"
             },
             "default": "./dist/cjs/index.js"
+        },
+        "./checkoutSessions": {
+            "import": {
+                "types": "./dist/esm/api/resources/checkoutSessions/exports.d.mts",
+                "default": "./dist/esm/api/resources/checkoutSessions/exports.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/api/resources/checkoutSessions/exports.d.ts",
+                "default": "./dist/cjs/api/resources/checkoutSessions/exports.js"
+            },
+            "default": "./dist/cjs/api/resources/checkoutSessions/exports.js"
+        },
+        "./merchants": {
+            "import": {
+                "types": "./dist/esm/api/resources/merchants/exports.d.mts",
+                "default": "./dist/esm/api/resources/merchants/exports.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/api/resources/merchants/exports.d.ts",
+                "default": "./dist/cjs/api/resources/merchants/exports.js"
+            },
+            "default": "./dist/cjs/api/resources/merchants/exports.js"
+        },
+        "./payouts": {
+            "import": {
+                "types": "./dist/esm/api/resources/payouts/exports.d.mts",
+                "default": "./dist/esm/api/resources/payouts/exports.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/api/resources/payouts/exports.d.ts",
+                "default": "./dist/cjs/api/resources/payouts/exports.js"
+            },
+            "default": "./dist/cjs/api/resources/payouts/exports.js"
         },
         "./package.json": "./package.json"
     },

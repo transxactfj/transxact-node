@@ -4,8 +4,8 @@ import * as TransxactApi from "../../src/api/index";
 import { TransxactApiClient } from "../../src/Client";
 import { mockServerPool } from "../mock-server/MockServerPool";
 
-describe("TransxactApiClient", () => {
-    test("postV1CheckoutSessions (1)", async () => {
+describe("CheckoutSessionsClient", () => {
+    test("create (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 5000, currency: "FJD" };
@@ -29,7 +29,7 @@ describe("TransxactApiClient", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.postV1CheckoutSessions({
+        const response = await client.checkoutSessions.create({
             "idempotency-key": "a1b2c3d4-order-9912",
             amount: 5000,
             currency: "FJD",
@@ -37,7 +37,7 @@ describe("TransxactApiClient", () => {
         expect(response).toEqual(rawResponseBody);
     });
 
-    test("postV1CheckoutSessions (2)", async () => {
+    test("create (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
@@ -54,7 +54,7 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.postV1CheckoutSessions({
+            return await client.checkoutSessions.create({
                 "idempotency-key": "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
@@ -62,7 +62,7 @@ describe("TransxactApiClient", () => {
         }).rejects.toThrow(TransxactApi.BadRequestError);
     });
 
-    test("postV1CheckoutSessions (3)", async () => {
+    test("create (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
@@ -79,7 +79,7 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.postV1CheckoutSessions({
+            return await client.checkoutSessions.create({
                 "idempotency-key": "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
@@ -87,7 +87,7 @@ describe("TransxactApiClient", () => {
         }).rejects.toThrow(TransxactApi.UnauthorizedError);
     });
 
-    test("postV1CheckoutSessions (4)", async () => {
+    test("create (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
         const rawRequestBody = { amount: 499999, currency: "FJD" };
@@ -104,7 +104,7 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.postV1CheckoutSessions({
+            return await client.checkoutSessions.create({
                 "idempotency-key": "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
@@ -112,7 +112,7 @@ describe("TransxactApiClient", () => {
         }).rejects.toThrow(TransxactApi.ConflictError);
     });
 
-    test("getV1CheckoutSessionsId (1)", async () => {
+    test("retrieve (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -134,13 +134,13 @@ describe("TransxactApiClient", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.getV1CheckoutSessionsId({
+        const response = await client.checkoutSessions.retrieve({
             id: "cs_3f9c2b1a",
         });
         expect(response).toEqual(rawResponseBody);
     });
 
-    test("getV1CheckoutSessionsId (2)", async () => {
+    test("retrieve (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -155,13 +155,13 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.getV1CheckoutSessionsId({
+            return await client.checkoutSessions.retrieve({
                 id: "id",
             });
         }).rejects.toThrow(TransxactApi.NotFoundError);
     });
 
-    test("postV1CheckoutSessionsIdCancel (1)", async () => {
+    test("cancel (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -183,13 +183,13 @@ describe("TransxactApiClient", () => {
             .jsonBody(rawResponseBody)
             .build();
 
-        const response = await client.postV1CheckoutSessionsIdCancel({
+        const response = await client.checkoutSessions.cancel({
             id: "cs_3f9c2b1a",
         });
         expect(response).toEqual(rawResponseBody);
     });
 
-    test("postV1CheckoutSessionsIdCancel (2)", async () => {
+    test("cancel (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -204,13 +204,13 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.postV1CheckoutSessionsIdCancel({
+            return await client.checkoutSessions.cancel({
                 id: "id",
             });
         }).rejects.toThrow(TransxactApi.NotFoundError);
     });
 
-    test("postV1CheckoutSessionsIdCancel (3)", async () => {
+    test("cancel (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -225,118 +225,9 @@ describe("TransxactApiClient", () => {
             .build();
 
         await expect(async () => {
-            return await client.postV1CheckoutSessionsIdCancel({
+            return await client.checkoutSessions.cancel({
                 id: "id",
             });
         }).rejects.toThrow(TransxactApi.ConflictError);
-    });
-
-    test("getV1MerchantsMe (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { tier: "business", mode: "test", balance: 4800, payoutSchedule: "daily" };
-
-        server.mockEndpoint().get("/v1/merchants/me").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
-
-        const response = await client.getV1MerchantsMe();
-        expect(response).toEqual(rawResponseBody);
-    });
-
-    test("getV1MerchantsMe (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { error: { code: "code", message: "message" } };
-
-        server.mockEndpoint().get("/v1/merchants/me").respondWith().statusCode(401).jsonBody(rawResponseBody).build();
-
-        await expect(async () => {
-            return await client.getV1MerchantsMe();
-        }).rejects.toThrow(TransxactApi.UnauthorizedError);
-    });
-
-    test("getV1Payouts (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = {
-            data: [
-                {
-                    id: "po_3f9c2b1a",
-                    amount: 4800,
-                    rail: "bank_transfer",
-                    status: "pending",
-                    paidAt: 1717100000000,
-                    failureReason: "failureReason",
-                    createdAt: 1717000000000,
-                },
-            ],
-            hasMore: true,
-        };
-
-        server.mockEndpoint().get("/v1/payouts").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
-
-        const response = await client.getV1Payouts({
-            starting_after: "po_3f9c2b1a",
-            limit: "10",
-        });
-        expect(response).toEqual(rawResponseBody);
-    });
-
-    test("getV1Payouts (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { error: { code: "code", message: "message" } };
-
-        server.mockEndpoint().get("/v1/payouts").respondWith().statusCode(401).jsonBody(rawResponseBody).build();
-
-        await expect(async () => {
-            return await client.getV1Payouts();
-        }).rejects.toThrow(TransxactApi.UnauthorizedError);
-    });
-
-    test("getV1PayoutsId (1)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = {
-            id: "po_3f9c2b1a",
-            amount: 4800,
-            rail: "bank_transfer",
-            status: "pending",
-            paidAt: 1717100000000,
-            failureReason: "failureReason",
-            createdAt: 1717000000000,
-        };
-
-        server
-            .mockEndpoint()
-            .get("/v1/payouts/po_3f9c2b1a")
-            .respondWith()
-            .statusCode(200)
-            .jsonBody(rawResponseBody)
-            .build();
-
-        const response = await client.getV1PayoutsId({
-            id: "po_3f9c2b1a",
-        });
-        expect(response).toEqual(rawResponseBody);
-    });
-
-    test("getV1PayoutsId (2)", async () => {
-        const server = mockServerPool.createServer();
-        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-
-        const rawResponseBody = { error: { code: "code", message: "message" } };
-
-        server.mockEndpoint().get("/v1/payouts/id").respondWith().statusCode(404).jsonBody(rawResponseBody).build();
-
-        await expect(async () => {
-            return await client.getV1PayoutsId({
-                id: "id",
-            });
-        }).rejects.toThrow(TransxactApi.NotFoundError);
     });
 });

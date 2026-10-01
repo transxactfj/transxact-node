@@ -6,7 +6,7 @@
  *         id: "cs_3f9c2b1a"
  *     }
  */
-export interface PostV1CheckoutSessionsIdCancelRequest {
+export interface CancelCheckoutSessionsRequest {
     /** Checkout Session identifier. */
     id: string;
 }

@@ -1,5 +1,6 @@
 # Reference
-<details><summary><code>client.<a href="/src/Client.ts">postV1CheckoutSessions</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
+## CheckoutSessions
+<details><summary><code>client.checkoutSessions.<a href="/src/api/resources/checkoutSessions/client/Client.ts">create</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
 <dl>
 <dd>
 
@@ -12,7 +13,7 @@
 <dd>
 
 ```typescript
-await client.postV1CheckoutSessions({
+await client.checkoutSessions.create({
     "idempotency-key": "a1b2c3d4-order-9912",
     amount: 5000,
     currency: "FJD"
@@ -40,7 +41,7 @@ await client.postV1CheckoutSessions({
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `CheckoutSessionsClient.RequestOptions` 
     
 </dd>
 </dl>
@@ -52,7 +53,7 @@ await client.postV1CheckoutSessions({
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/Client.ts">getV1CheckoutSessionsId</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
+<details><summary><code>client.checkoutSessions.<a href="/src/api/resources/checkoutSessions/client/Client.ts">retrieve</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
 <dl>
 <dd>
 
@@ -65,7 +66,7 @@ await client.postV1CheckoutSessions({
 <dd>
 
 ```typescript
-await client.getV1CheckoutSessionsId({
+await client.checkoutSessions.retrieve({
     id: "cs_3f9c2b1a"
 });
 
@@ -83,7 +84,7 @@ await client.getV1CheckoutSessionsId({
 <dl>
 <dd>
 
-**request:** `TransxactApi.GetV1CheckoutSessionsIdRequest` 
+**request:** `TransxactApi.RetrieveCheckoutSessionsRequest` 
     
 </dd>
 </dl>
@@ -91,7 +92,7 @@ await client.getV1CheckoutSessionsId({
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `CheckoutSessionsClient.RequestOptions` 
     
 </dd>
 </dl>
@@ -103,7 +104,7 @@ await client.getV1CheckoutSessionsId({
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/Client.ts">postV1CheckoutSessionsIdCancel</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
+<details><summary><code>client.checkoutSessions.<a href="/src/api/resources/checkoutSessions/client/Client.ts">cancel</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
 <dl>
 <dd>
 
@@ -116,7 +117,7 @@ await client.getV1CheckoutSessionsId({
 <dd>
 
 ```typescript
-await client.postV1CheckoutSessionsIdCancel({
+await client.checkoutSessions.cancel({
     id: "cs_3f9c2b1a"
 });
 
@@ -134,7 +135,7 @@ await client.postV1CheckoutSessionsIdCancel({
 <dl>
 <dd>
 
-**request:** `TransxactApi.PostV1CheckoutSessionsIdCancelRequest` 
+**request:** `TransxactApi.CancelCheckoutSessionsRequest` 
     
 </dd>
 </dl>
@@ -142,7 +143,7 @@ await client.postV1CheckoutSessionsIdCancel({
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `CheckoutSessionsClient.RequestOptions` 
     
 </dd>
 </dl>
@@ -154,7 +155,8 @@ await client.postV1CheckoutSessionsIdCancel({
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/Client.ts">getV1MerchantsMe</a>() -> TransxactApi.Merchant</code></summary>
+## Merchants
+<details><summary><code>client.merchants.<a href="/src/api/resources/merchants/client/Client.ts">me</a>() -> TransxactApi.Merchant</code></summary>
 <dl>
 <dd>
 
@@ -167,7 +169,7 @@ await client.postV1CheckoutSessionsIdCancel({
 <dd>
 
 ```typescript
-await client.getV1MerchantsMe();
+await client.merchants.me();
 
 ```
 </dd>
@@ -183,7 +185,7 @@ await client.getV1MerchantsMe();
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `MerchantsClient.RequestOptions` 
     
 </dd>
 </dl>
@@ -195,7 +197,8 @@ await client.getV1MerchantsMe();
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/Client.ts">getV1Payouts</a>({ ...params }) -> TransxactApi.GetV1PayoutsResponse</code></summary>
+## Payouts
+<details><summary><code>client.payouts.<a href="/src/api/resources/payouts/client/Client.ts">list</a>({ ...params }) -> TransxactApi.ListPayoutsResponse</code></summary>
 <dl>
 <dd>
 
@@ -208,7 +211,7 @@ await client.getV1MerchantsMe();
 <dd>
 
 ```typescript
-await client.getV1Payouts({
+await client.payouts.list({
     starting_after: "po_3f9c2b1a",
     limit: "10"
 });
@@ -227,7 +230,7 @@ await client.getV1Payouts({
 <dl>
 <dd>
 
-**request:** `TransxactApi.GetV1PayoutsRequest` 
+**request:** `TransxactApi.ListPayoutsRequest` 
     
 </dd>
 </dl>
@@ -235,7 +238,7 @@ await client.getV1Payouts({
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `PayoutsClient.RequestOptions` 
     
 </dd>
 </dl>
@@ -247,7 +250,7 @@ await client.getV1Payouts({
 </dl>
 </details>
 
-<details><summary><code>client.<a href="/src/Client.ts">getV1PayoutsId</a>({ ...params }) -> TransxactApi.Payout</code></summary>
+<details><summary><code>client.payouts.<a href="/src/api/resources/payouts/client/Client.ts">retrieve</a>({ ...params }) -> TransxactApi.Payout</code></summary>
 <dl>
 <dd>
 
@@ -260,7 +263,7 @@ await client.getV1Payouts({
 <dd>
 
 ```typescript
-await client.getV1PayoutsId({
+await client.payouts.retrieve({
     id: "po_3f9c2b1a"
 });
 
@@ -278,7 +281,7 @@ await client.getV1PayoutsId({
 <dl>
 <dd>
 
-**request:** `TransxactApi.GetV1PayoutsIdRequest` 
+**request:** `TransxactApi.RetrievePayoutsRequest` 
     
 </dd>
 </dl>
@@ -286,7 +289,7 @@ await client.getV1PayoutsId({
 <dl>
 <dd>
 
-**requestOptions:** `TransxactApiClient.RequestOptions` 
+**requestOptions:** `PayoutsClient.RequestOptions` 
     
 </dd>
 </dl>

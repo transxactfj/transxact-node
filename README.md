@@ -10,9 +10,11 @@ The Transxact TypeScript library provides convenient access to the Transxact API
 - [Installation](#installation)
 - [Reference](#reference)
 - [Usage](#usage)
+- [Environments](#environments)
 - [Request and Response Types](#request-and-response-types)
 - [Exception Handling](#exception-handling)
 - [Advanced](#advanced)
+  - [Subpackage Exports](#subpackage-exports)
   - [Additional Headers](#additional-headers)
   - [Additional Query String Parameters](#additional-query-string-parameters)
   - [Retries](#retries)
@@ -41,11 +43,23 @@ Instantiate and use the client with the following:
 ```typescript
 import { TransxactApiClient } from "@transxact/node";
 
-const client = new TransxactApiClient({ baseUrl: "YOUR_BASE_URL", token: "YOUR_TOKEN" });
-await client.postV1CheckoutSessions({
+const client = new TransxactApiClient({ token: "YOUR_TOKEN" });
+await client.checkoutSessions.create({
     "idempotency-key": "a1b2c3d4-order-9912",
     amount: 5000,
     currency: "FJD"
+});
+```
+
+## Environments
+
+This SDK allows you to configure different environments for API requests.
+
+```typescript
+import { TransxactApiClient, TransxactApiEnvironment } from "@transxact/node";
+
+const client = new TransxactApiClient({
+    environment: TransxactApiEnvironment.Production,
 });
 ```
 
@@ -71,7 +85,7 @@ will be thrown.
 import { TransxactApiError } from "@transxact/node";
 
 try {
-    await client.postV1CheckoutSessions(...);
+    await client.checkoutSessions.create(...);
 } catch (err) {
     if (err instanceof TransxactApiError) {
         console.log(err.statusCode);
@@ -83,6 +97,16 @@ try {
 ```
 
 ## Advanced
+
+### Subpackage Exports
+
+This SDK supports direct imports of subpackage clients, which allows JavaScript bundlers to tree-shake and include only the imported subpackage code. This results in much smaller bundle sizes.
+
+```typescript
+import { CheckoutSessionsClient } from '@transxact/node/checkoutSessions';
+
+const client = new CheckoutSessionsClient({...});
+```
 
 ### Additional Headers
 
@@ -98,7 +122,7 @@ const client = new TransxactApiClient({
     }
 });
 
-const response = await client.postV1CheckoutSessions(..., {
+const response = await client.checkoutSessions.create(..., {
     headers: {
         'X-Custom-Header': 'custom value'
     }
@@ -110,7 +134,7 @@ const response = await client.postV1CheckoutSessions(..., {
 If you would like to send additional query string parameters as part of the request, use the `queryParams` request option.
 
 ```typescript
-const response = await client.postV1CheckoutSessions(..., {
+const response = await client.checkoutSessions.create(..., {
     queryParams: {
         'customQueryParamKey': 'custom query param value'
     }
@@ -140,7 +164,7 @@ Which status codes are retried depends on the `retryStatusCodes` generator confi
 Use the `maxRetries` request option to configure this behavior.
 
 ```typescript
-const response = await client.postV1CheckoutSessions(..., {
+const response = await client.checkoutSessions.create(..., {
     maxRetries: 0 // override maxRetries at the request level
 });
 ```
@@ -150,7 +174,7 @@ const response = await client.postV1CheckoutSessions(..., {
 The SDK defaults to a 60 second timeout. Use the `timeoutInSeconds` option to configure this behavior.
 
 ```typescript
-const response = await client.postV1CheckoutSessions(..., {
+const response = await client.checkoutSessions.create(..., {
     timeoutInSeconds: 30 // override timeout to 30s
 });
 ```
@@ -161,7 +185,7 @@ The SDK allows users to abort requests at any point by passing in an abort signa
 
 ```typescript
 const controller = new AbortController();
-const response = await client.postV1CheckoutSessions(..., {
+const response = await client.checkoutSessions.create(..., {
     abortSignal: controller.signal
 });
 controller.abort(); // aborts the request
@@ -173,7 +197,7 @@ The SDK provides access to raw response data, including headers, through the `.w
 The `.withRawResponse()` method returns a promise that results to an object with a `data` and a `rawResponse` property.
 
 ```typescript
-const { data, rawResponse } = await client.postV1CheckoutSessions(...).withRawResponse();
+const { data, rawResponse } = await client.checkoutSessions.create(...).withRawResponse();
 
 console.log(data);
 console.log(rawResponse.headers['X-My-Header']);

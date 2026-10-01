@@ -3,10 +3,10 @@
 /**
  * @example
  *     {
- *         id: "po_3f9c2b1a"
+ *         id: "cs_3f9c2b1a"
  *     }
  */
-export interface GetV1PayoutsIdRequest {
-    /** Payout identifier. */
+export interface RetrieveCheckoutSessionsRequest {
+    /** Checkout Session identifier. */
     id: string;
 }
