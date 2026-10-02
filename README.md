@@ -3,12 +3,14 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Ftransxactfj%2Ftransxact-node)
 [![npm shield](https://img.shields.io/npm/v/@transxact/node)](https://www.npmjs.com/package/@transxact/node)
 
-The Transxact TypeScript library provides convenient access to the Transxact APIs from TypeScript.
+Create a Checkout Session on your server, send the Customer to its hostedUrl, and fulfil the order from a verified webhook. Quickstart: https://docs.transxact.io/guides/quickstart. Step-by-step recipe for you or your coding agent: https://docs.transxact.io/guides/integrate-with-an-ai-agent
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Reference](#reference)
+- [Verifying Webhooks](#verifying-webhooks)
 - [Usage](#usage)
 - [Environments](#environments)
 - [Request and Response Types](#request-and-response-types)
@@ -26,6 +28,10 @@ The Transxact TypeScript library provides convenient access to the Transxact API
   - [Runtime Compatibility](#runtime-compatibility)
 - [Contributing](#contributing)
 
+## Documentation
+
+API reference documentation is available [here](https://docs.transxact.io/api-reference).
+
 ## Installation
 
 ```sh
@@ -36,6 +42,32 @@ npm i -s @transxact/node
 
 A full reference for this library is available [here](https://github.com/transxactfj/transxact-node/blob/HEAD/./reference.md).
 
+## Verifying webhooks
+
+Check the `Transxact-Signature` header before trusting a webhook, or anyone who can reach your endpoint can forge a payment notification. Pass the raw request body, exactly as received, not re-serialized JSON. Signatures older than 5 minutes are rejected.
+
+```typescript
+import { verifyWebhookSignature } from "@transxact/node/webhooks";
+
+// Express: keep the raw body for this route.
+app.post("/webhooks/transxact", express.raw({ type: "application/json" }), (req, res) => {
+  const rawBody = req.body.toString("utf8");
+  const ok = verifyWebhookSignature(
+    rawBody,
+    req.header("Transxact-Signature") ?? "",
+    process.env.TRANSXACT_WEBHOOK_SECRET!,
+  );
+  if (!ok) return res.status(400).end();
+
+  const event = JSON.parse(rawBody);
+  // Fulfil on event.type === "checkout_session.succeeded", skipping event ids you've already handled.
+  res.status(200).end();
+});
+```
+
+Your signing secret is in the **Webhooks** section of the dashboard. See [Verifying webhooks](https://docs.transxact.io/guides/verifying-webhooks) for retries and duplicate events.
+
+
 ## Usage
 
 Instantiate and use the client with the following:
@@ -45,7 +77,7 @@ import { TransxactApiClient } from "@transxact/node";
 
 const client = new TransxactApiClient({ token: "YOUR_TOKEN" });
 await client.checkoutSessions.create({
-    "idempotency-key": "a1b2c3d4-order-9912",
+    idempotencyKey: "a1b2c3d4-order-9912",
     amount: 5000,
     currency: "FJD"
 });

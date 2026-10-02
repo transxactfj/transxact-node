@@ -3,6 +3,8 @@
 import type * as TransxactApi from "../../../index.js";
 
 export interface ListPayoutsResponse {
+    /** This page of Payouts. */
     data: TransxactApi.Payout[];
+    /** True if more Payouts follow; pass the last id as `starting_after` to get them. */
     hasMore: boolean;
 }

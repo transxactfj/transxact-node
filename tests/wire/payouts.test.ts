@@ -27,10 +27,23 @@ describe("PayoutsClient", () => {
         server.mockEndpoint().get("/v1/payouts").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
 
         const response = await client.payouts.list({
-            starting_after: "po_3f9c2b1a",
+            startingAfter: "po_3f9c2b1a",
             limit: "10",
         });
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            data: [
+                {
+                    id: "po_3f9c2b1a",
+                    amount: 4800,
+                    rail: "bank_transfer",
+                    status: "pending",
+                    paidAt: 1717100000000,
+                    failureReason: "failureReason",
+                    createdAt: 1717000000000,
+                },
+            ],
+            hasMore: true,
+        });
     });
 
     test("list (2)", async () => {
@@ -71,10 +84,33 @@ describe("PayoutsClient", () => {
         const response = await client.payouts.retrieve({
             id: "po_3f9c2b1a",
         });
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            id: "po_3f9c2b1a",
+            amount: 4800,
+            rail: "bank_transfer",
+            status: "pending",
+            paidAt: 1717100000000,
+            failureReason: "failureReason",
+            createdAt: 1717000000000,
+        });
     });
 
     test("retrieve (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server.mockEndpoint().get("/v1/payouts/id").respondWith().statusCode(401).jsonBody(rawResponseBody).build();
+
+        await expect(async () => {
+            return await client.payouts.retrieve({
+                id: "id",
+            });
+        }).rejects.toThrow(TransxactApi.UnauthorizedError);
+    });
+
+    test("retrieve (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 

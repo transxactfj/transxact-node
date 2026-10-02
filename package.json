@@ -1,6 +1,6 @@
 {
     "name": "@transxact/node",
-    "version": "0.4.41",
+    "version": "0.4.45",
     "private": false,
     "repository": {
         "type": "git",
@@ -32,6 +32,17 @@
                 "default": "./dist/cjs/index.js"
             },
             "default": "./dist/cjs/index.js"
+        },
+        "./serialization": {
+            "import": {
+                "types": "./dist/esm/serialization/index.d.mts",
+                "default": "./dist/esm/serialization/index.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/serialization/index.d.ts",
+                "default": "./dist/cjs/serialization/index.js"
+            },
+            "default": "./dist/cjs/serialization/index.js"
         },
         "./checkoutSessions": {
             "import": {

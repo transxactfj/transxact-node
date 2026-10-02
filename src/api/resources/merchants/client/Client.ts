@@ -7,6 +7,7 @@ import * as core from "../../../../core/index.js";
 import * as environments from "../../../../environments.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
+import * as serializers from "../../../../serialization/index.js";
 import * as TransxactApi from "../../../index.js";
 
 export declare namespace MerchantsClient {
@@ -23,6 +24,8 @@ export class MerchantsClient {
     }
 
     /**
+     * Returns the Merchant that owns the API key: its tier, the key's mode, the balance not yet paid out in that mode, and the Payout schedule. A cheap way to check a key works and which mode it's in.
+     *
      * @param {MerchantsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
      * @throws {@link TransxactApi.UnauthorizedError}
@@ -62,14 +65,29 @@ export class MerchantsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.Merchant, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.Merchant.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 401:
                     throw new TransxactApi.UnauthorizedError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:

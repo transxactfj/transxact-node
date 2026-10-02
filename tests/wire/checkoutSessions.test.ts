@@ -30,11 +30,21 @@ describe("CheckoutSessionsClient", () => {
             .build();
 
         const response = await client.checkoutSessions.create({
-            "idempotency-key": "a1b2c3d4-order-9912",
+            idempotencyKey: "a1b2c3d4-order-9912",
             amount: 5000,
             currency: "FJD",
         });
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            id: "cs_3f9c2b1a",
+            status: "pending",
+            amount: 5000,
+            currency: "FJD",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: {
+                orderId: "9912",
+            },
+            expiresAt: 1717086400000,
+        });
     });
 
     test("create (2)", async () => {
@@ -55,7 +65,7 @@ describe("CheckoutSessionsClient", () => {
 
         await expect(async () => {
             return await client.checkoutSessions.create({
-                "idempotency-key": "idempotencyKey",
+                idempotencyKey: "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
             });
@@ -80,7 +90,7 @@ describe("CheckoutSessionsClient", () => {
 
         await expect(async () => {
             return await client.checkoutSessions.create({
-                "idempotency-key": "idempotencyKey",
+                idempotencyKey: "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
             });
@@ -105,7 +115,7 @@ describe("CheckoutSessionsClient", () => {
 
         await expect(async () => {
             return await client.checkoutSessions.create({
-                "idempotency-key": "idempotencyKey",
+                idempotencyKey: "idempotencyKey",
                 amount: 499999,
                 currency: "FJD",
             });
@@ -137,10 +147,41 @@ describe("CheckoutSessionsClient", () => {
         const response = await client.checkoutSessions.retrieve({
             id: "cs_3f9c2b1a",
         });
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            id: "cs_3f9c2b1a",
+            status: "pending",
+            amount: 5000,
+            currency: "FJD",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: {
+                orderId: "9912",
+            },
+            expiresAt: 1717086400000,
+        });
     });
 
     test("retrieve (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .get("/v1/checkout-sessions/id")
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.checkoutSessions.retrieve({
+                id: "id",
+            });
+        }).rejects.toThrow(TransxactApi.UnauthorizedError);
+    });
+
+    test("retrieve (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -186,10 +227,41 @@ describe("CheckoutSessionsClient", () => {
         const response = await client.checkoutSessions.cancel({
             id: "cs_3f9c2b1a",
         });
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            id: "cs_3f9c2b1a",
+            status: "pending",
+            amount: 5000,
+            currency: "FJD",
+            hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+            metadata: {
+                orderId: "9912",
+            },
+            expiresAt: 1717086400000,
+        });
     });
 
     test("cancel (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .post("/v1/checkout-sessions/id/cancel")
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.checkoutSessions.cancel({
+                id: "id",
+            });
+        }).rejects.toThrow(TransxactApi.UnauthorizedError);
+    });
+
+    test("cancel (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 
@@ -210,7 +282,7 @@ describe("CheckoutSessionsClient", () => {
         }).rejects.toThrow(TransxactApi.NotFoundError);
     });
 
-    test("cancel (3)", async () => {
+    test("cancel (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
 

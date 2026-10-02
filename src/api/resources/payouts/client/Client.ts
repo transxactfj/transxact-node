@@ -7,6 +7,7 @@ import * as core from "../../../../core/index.js";
 import * as environments from "../../../../environments.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
+import * as serializers from "../../../../serialization/index.js";
 import * as TransxactApi from "../../../index.js";
 
 export declare namespace PayoutsClient {
@@ -23,6 +24,8 @@ export class PayoutsClient {
     }
 
     /**
+     * Lists the Merchant's Payouts in the key's mode, oldest id first. Payouts are made on the Merchant's Payout schedule, or when the Merchant asks from the dashboard on the manual schedule; they can't be created through the API. To page, pass the last id you got as `starting_after` while `hasMore` is true.
+     *
      * @param {TransxactApi.ListPayoutsRequest} request
      * @param {PayoutsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
@@ -32,7 +35,7 @@ export class PayoutsClient {
      *
      * @example
      *     await client.payouts.list({
-     *         starting_after: "po_3f9c2b1a",
+     *         startingAfter: "po_3f9c2b1a",
      *         limit: "10"
      *     })
      */
@@ -47,7 +50,7 @@ export class PayoutsClient {
         request: TransxactApi.ListPayoutsRequest = {},
         requestOptions?: PayoutsClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.ListPayoutsResponse>> {
-        const { starting_after: startingAfter, limit } = request;
+        const { startingAfter, limit } = request;
         const _queryParams: Record<string, unknown> = {
             starting_after: startingAfter,
             limit,
@@ -79,14 +82,29 @@ export class PayoutsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.ListPayoutsResponse, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.ListPayoutsResponse.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 401:
                     throw new TransxactApi.UnauthorizedError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:
@@ -102,9 +120,12 @@ export class PayoutsClient {
     }
 
     /**
+     * Returns one Payout by id: its amount, rail and status, and why it failed if it did. Payouts from the other mode or another Merchant are 404.
+     *
      * @param {TransxactApi.RetrievePayoutsRequest} request
      * @param {PayoutsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link TransxactApi.UnauthorizedError}
      * @throws {@link TransxactApi.NotFoundError}
      * @throws {@link errors.TransxactApiError}
      * @throws {@link errors.TransxactApiTimeoutError}
@@ -149,14 +170,40 @@ export class PayoutsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.Payout, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.Payout.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 401:
+                    throw new TransxactApi.UnauthorizedError(
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new TransxactApi.NotFoundError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:

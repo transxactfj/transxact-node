@@ -8,6 +8,7 @@ import { mergeAdditionalBodyParameters } from "../../../../core/requestBody.js";
 import * as environments from "../../../../environments.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
+import * as serializers from "../../../../serialization/index.js";
 import * as TransxactApi from "../../../index.js";
 
 export declare namespace CheckoutSessionsClient {
@@ -24,6 +25,8 @@ export class CheckoutSessionsClient {
     }
 
     /**
+     * Starts a payment: call this from your server, then redirect the Customer to the returned `hostedUrl`, which takes the payment with any Provider. Don't fulfil on the redirect; wait for the `checkout_session.succeeded` webhook or retrieve the session. The `Idempotency-Key` header is required: a retry with the same key replays the original session instead of creating a second one, so derive it from your order. An `sk_test_` key creates a Test mode session that simulates payment; an `sk_live_` key creates a Live mode session that moves real money.
+     *
      * @param {TransxactApi.CreateCheckoutSessionRequest} request
      * @param {CheckoutSessionsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
@@ -35,7 +38,7 @@ export class CheckoutSessionsClient {
      *
      * @example
      *     await client.checkoutSessions.create({
-     *         "idempotency-key": "a1b2c3d4-order-9912",
+     *         idempotencyKey: "a1b2c3d4-order-9912",
      *         amount: 5000,
      *         currency: "FJD"
      *     })
@@ -51,7 +54,7 @@ export class CheckoutSessionsClient {
         request: TransxactApi.CreateCheckoutSessionRequest,
         requestOptions?: CheckoutSessionsClient.RequestOptions,
     ): Promise<core.WithRawResponse<TransxactApi.CheckoutSession>> {
-        const { "idempotency-key": idempotencyKey, ..._body } = request;
+        const { idempotencyKey, ..._body } = request;
         const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
         const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
             _authRequest.headers,
@@ -71,7 +74,13 @@ export class CheckoutSessionsClient {
             contentType: "application/json",
             queryString: core.url.queryBuilder().mergeAdditional(requestOptions?.queryParams).build(),
             requestType: "json",
-            body: mergeAdditionalBodyParameters(_body, requestOptions?.additionalBodyParameters),
+            body: mergeAdditionalBodyParameters(
+                serializers.CreateCheckoutSessionRequest.jsonOrThrow(_body, {
+                    unrecognizedObjectKeys: "strip",
+                    omitUndefined: true,
+                }),
+                requestOptions?.additionalBodyParameters,
+            ),
             timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
             maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
             abortSignal: requestOptions?.abortSignal,
@@ -79,24 +88,51 @@ export class CheckoutSessionsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.CheckoutSession, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.CheckoutSession.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
                 case 400:
                     throw new TransxactApi.BadRequestError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 case 401:
                     throw new TransxactApi.UnauthorizedError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 case 409:
                     throw new TransxactApi.ConflictError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:
@@ -112,9 +148,12 @@ export class CheckoutSessionsClient {
     }
 
     /**
+     * Returns a Checkout Session's current state. Use it to confirm the outcome when the Customer lands on your `successUrl` with `session_id`, or to check a webhook you missed. Only sessions created with a key of the same Merchant and mode are visible; anything else is 404.
+     *
      * @param {TransxactApi.RetrieveCheckoutSessionsRequest} request
      * @param {CheckoutSessionsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link TransxactApi.UnauthorizedError}
      * @throws {@link TransxactApi.NotFoundError}
      * @throws {@link errors.TransxactApiError}
      * @throws {@link errors.TransxactApiTimeoutError}
@@ -159,14 +198,40 @@ export class CheckoutSessionsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.CheckoutSession, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.CheckoutSession.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 401:
+                    throw new TransxactApi.UnauthorizedError(
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new TransxactApi.NotFoundError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:
@@ -182,9 +247,12 @@ export class CheckoutSessionsClient {
     }
 
     /**
+     * Withdraws a `pending` Checkout Session so it can't be paid, e.g. when the order is abandoned or changed. Fails with `payment_in_progress` once the Customer has started paying; wait for the outcome webhook instead. Unpaid sessions also cancel on their own after `expiresAt`, unless the Customer has started paying.
+     *
      * @param {TransxactApi.CancelCheckoutSessionsRequest} request
      * @param {CheckoutSessionsClient.RequestOptions} requestOptions - Request-specific configuration.
      *
+     * @throws {@link TransxactApi.UnauthorizedError}
      * @throws {@link TransxactApi.NotFoundError}
      * @throws {@link TransxactApi.ConflictError}
      * @throws {@link errors.TransxactApiError}
@@ -230,19 +298,51 @@ export class CheckoutSessionsClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as TransxactApi.CheckoutSession, rawResponse: _response.rawResponse };
+            return {
+                data: serializers.CheckoutSession.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
             switch (_response.error.statusCode) {
+                case 401:
+                    throw new TransxactApi.UnauthorizedError(
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
+                        _response.rawResponse,
+                    );
                 case 404:
                     throw new TransxactApi.NotFoundError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 case 409:
                     throw new TransxactApi.ConflictError(
-                        _response.error.body as TransxactApi.Error_,
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
                         _response.rawResponse,
                     );
                 default:

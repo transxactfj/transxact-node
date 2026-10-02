@@ -14,7 +14,12 @@ describe("MerchantsClient", () => {
         server.mockEndpoint().get("/v1/merchants/me").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
 
         const response = await client.merchants.me();
-        expect(response).toEqual(rawResponseBody);
+        expect(response).toEqual({
+            tier: "business",
+            mode: "test",
+            balance: 4800,
+            payoutSchedule: "daily",
+        });
     });
 
     test("me (2)", async () => {

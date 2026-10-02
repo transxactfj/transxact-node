@@ -3,13 +3,13 @@
 /**
  * @example
  *     {
- *         starting_after: "po_3f9c2b1a",
+ *         startingAfter: "po_3f9c2b1a",
  *         limit: "10"
  *     }
  */
 export interface ListPayoutsRequest {
     /** Cursor: return Payouts after this id. */
-    starting_after?: string;
+    startingAfter?: string;
     /** Max rows to return (default 10, max 100). */
     limit?: string;
 }
