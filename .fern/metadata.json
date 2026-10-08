@@ -3,6 +3,7 @@
     "generatorName": "fernapi/fern-typescript-sdk",
     "generatorVersion": "3.96.3",
     "generatorConfig": {
+        "namespaceExport": "TransxactApi",
         "packageJsonMergeStrategy": "deep",
         "noSerdeLayer": false,
         "skipResponseValidation": true,
@@ -22,10 +23,10 @@
             }
         }
     },
-    "originGitCommit": "b1394888a685f09f721114747b9c239bc842af29",
+    "originGitCommit": "1ef89bae668dc60372376bae7a2edf870663a4df",
     "originGitCommitIsDirty": false,
     "invokedBy": "ci",
-    "requestedVersion": "0.4.481",
+    "requestedVersion": "0.4.482",
     "ciProvider": "github",
-    "sdkVersion": "0.4.481"
+    "sdkVersion": "0.4.482"
 }
