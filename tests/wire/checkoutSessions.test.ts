@@ -12,6 +12,7 @@ describe("CheckoutSessionsClient", () => {
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
@@ -37,6 +38,7 @@ describe("CheckoutSessionsClient", () => {
         expect(response).toEqual({
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
@@ -129,6 +131,7 @@ describe("CheckoutSessionsClient", () => {
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
@@ -150,6 +153,7 @@ describe("CheckoutSessionsClient", () => {
         expect(response).toEqual({
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
@@ -209,6 +213,7 @@ describe("CheckoutSessionsClient", () => {
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
@@ -230,6 +235,7 @@ describe("CheckoutSessionsClient", () => {
         expect(response).toEqual({
             id: "cs_3f9c2b1a",
             status: "pending",
+            mode: "test",
             amount: 5000,
             currency: "FJD",
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",

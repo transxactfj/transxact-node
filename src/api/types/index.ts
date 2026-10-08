@@ -1,5 +1,6 @@
 export * from "./CheckoutSession.js";
 export * from "./CheckoutSessionCurrency.js";
+export * from "./CheckoutSessionMode.js";
 export * from "./CheckoutSessionStatus.js";
 export * from "./Error_.js";
 export * from "./ErrorError.js";

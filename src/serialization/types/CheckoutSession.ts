@@ -4,6 +4,7 @@ import type * as TransxactApi from "../../api/index.js";
 import * as core from "../../core/index.js";
 import type * as serializers from "../index.js";
 import { CheckoutSessionCurrency } from "./CheckoutSessionCurrency.js";
+import { CheckoutSessionMode } from "./CheckoutSessionMode.js";
 import { CheckoutSessionStatus } from "./CheckoutSessionStatus.js";
 
 export const CheckoutSession: core.serialization.ObjectSchema<
@@ -12,6 +13,7 @@ export const CheckoutSession: core.serialization.ObjectSchema<
 > = core.serialization.object({
     id: core.serialization.string(),
     status: CheckoutSessionStatus,
+    mode: CheckoutSessionMode,
     amount: core.serialization.number(),
     currency: CheckoutSessionCurrency,
     hostedUrl: core.serialization.string(),
@@ -23,6 +25,7 @@ export declare namespace CheckoutSession {
     export interface Raw {
         id: string;
         status: CheckoutSessionStatus.Raw;
+        mode: CheckoutSessionMode.Raw;
         amount: number;
         currency: CheckoutSessionCurrency.Raw;
         hostedUrl: string;

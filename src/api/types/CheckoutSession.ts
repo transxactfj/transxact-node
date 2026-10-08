@@ -7,6 +7,8 @@ export interface CheckoutSession {
     id: string;
     /** `pending` until the Customer pays or the session ends. `succeeded`: paid, safe to fulfil. `failed`: the payment was declined or didn't go through. `cancelled`: you cancelled it or it expired unpaid. Only `pending` ever changes, and each change sends the matching `checkout_session.*` webhook. */
     status: TransxactApi.CheckoutSessionStatus;
+    /** `test` for a session made with an `sk_test_` key, `live` for an `sk_live_` key. Webhook endpoints each hear one mode, and the payload says which it came from. */
+    mode: TransxactApi.CheckoutSessionMode;
     /** Amount to charge, in FJD cents (minor units). */
     amount: number;
     /** Always FJD in v1. */
