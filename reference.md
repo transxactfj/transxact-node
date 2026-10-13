@@ -1,5 +1,74 @@
 # Reference
 ## CheckoutSessions
+<details><summary><code>client.checkoutSessions.<a href="/src/api/resources/checkoutSessions/client/Client.ts">list</a>({ ...params }) -> TransxactApi.CheckoutSessionList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists your Checkout Sessions in the key's mode, newest first, so you can reconcile payments without having kept every id. Narrow it with `status` and a `from`/`to` created range. To page, pass the `nextCursor` you got as `cursor` until it is null.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.checkoutSessions.list({
+    limit: "10",
+    cursor: "1717086400000.cs_3f9c2b1a",
+    status: "succeeded",
+    from: "1717000000000",
+    to: "1717086400000"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.ListCheckoutSessionsRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `CheckoutSessionsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
 <details><summary><code>client.checkoutSessions.<a href="/src/api/resources/checkoutSessions/client/Client.ts">create</a>({ ...params }) -> TransxactApi.CheckoutSession</code></summary>
 <dl>
 <dd>
@@ -28,9 +97,7 @@ Starts a payment: call this from your server, then redirect the Customer to the 
 
 ```typescript
 await client.checkoutSessions.create({
-    idempotencyKey: "a1b2c3d4-order-9912",
-    amount: 5000,
-    currency: "FJD"
+    idempotencyKey: "a1b2c3d4-order-9912"
 });
 
 ```
@@ -186,6 +253,407 @@ await client.checkoutSessions.cancel({
 <dd>
 
 **requestOptions:** `CheckoutSessionsClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+## Invoices
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">list</a>({ ...params }) -> TransxactApi.InvoiceList</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Lists your Invoices in the key's mode, newest first. To page, pass the last `id` you got as `starting_after` while `hasMore` is true.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.list({
+    limit: 10,
+    startingAfter: 42
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.ListInvoicesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">create</a>({ ...params }) -> TransxactApi.Invoice</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Creates a draft Invoice in the key's mode. It has no number and no working `url` until you send it. The total, with tax, must be under FJD 5,000.00 (at most 499999 cents), in Test mode and Live mode alike. The `Idempotency-Key` header is required: a retry with the same key returns the original draft instead of making a second.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.create({
+    idempotencyKey: "a1b2c3d4-order-9912",
+    customerName: "Mere Tuilagi",
+    dueDate: "2026-11-30",
+    items: [{
+            description: "Tiling, kitchen",
+            quantity: 2,
+            unitPrice: 12000
+        }]
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.CreateInvoiceRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">retrieve</a>({ ...params }) -> TransxactApi.Invoice</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Returns one Invoice and its current state. Invoices from the other mode or another Merchant are 404.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.retrieve({
+    id: 42
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.RetrieveInvoicesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">send</a>({ ...params }) -> TransxactApi.Invoice</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Releases a draft: assigns its Invoice number (from your prefix and counter in Settings) and makes its `url` work for the Customer. Transxact does not email it for you here; share the `url`, or email it from the dashboard. A sent Invoice can't be edited; void it and make another. The `Idempotency-Key` header is required: a retry returns the sent Invoice and uses no second number.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.send({
+    idempotencyKey: "a1b2c3d4-order-9912",
+    id: 42
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.SendInvoicesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">void</a>({ ...params }) -> TransxactApi.Invoice</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+Cancels a sent, unpaid Invoice so it can no longer be paid. Its number is kept and never reused. Refused for a draft, a paid Invoice, or while a Customer is paying it right now. The `Idempotency-Key` header is required.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.void({
+    idempotencyKey: "a1b2c3d4-order-9912",
+    id: 42
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.VoidInvoicesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
+    
+</dd>
+</dl>
+</dd>
+</dl>
+
+
+</dd>
+</dl>
+</details>
+
+<details><summary><code>client.invoices.<a href="/src/api/resources/invoices/client/Client.ts">retrievePdf</a>({ ...params }) -> core.BinaryResponse</code></summary>
+<dl>
+<dd>
+
+#### 📝 Description
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+The Invoice as a PDF, the same file the Customer's page and emails carry. This is the `pdfUrl` on the Invoice. Available once the Invoice is sent.
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### 🔌 Usage
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+```typescript
+await client.invoices.retrievePdf({
+    id: "id"
+});
+
+```
+</dd>
+</dl>
+</dd>
+</dl>
+
+#### ⚙️ Parameters
+
+<dl>
+<dd>
+
+<dl>
+<dd>
+
+**request:** `TransxactApi.RetrievePdfInvoicesRequest` 
+    
+</dd>
+</dl>
+
+<dl>
+<dd>
+
+**requestOptions:** `InvoicesClient.RequestOptions` 
     
 </dd>
 </dl>

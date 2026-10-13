@@ -19,4 +19,8 @@ export interface CheckoutSession {
     metadata: Record<string, string>;
     /** Unix ms timestamp after which no payment can start; a still-pending session is then cancelled. */
     expiresAt: number;
+    /** The Invoice number, such as `INV-0007`, when the session pays one of your Invoices; absent otherwise. Also in the webhook payload. */
+    invoiceNumber?: string;
+    /** Present when you created the session with a `quote`: the USD or AUD price you sent, the FJD rate it was converted at (a decimal string), and the Unix ms time the rate was taken. `amount` is the FJD that is charged. Never shown to the Customer. */
+    quote?: TransxactApi.CheckoutSessionQuote;
 }

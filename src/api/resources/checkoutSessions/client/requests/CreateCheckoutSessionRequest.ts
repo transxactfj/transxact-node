@@ -5,24 +5,26 @@ import type * as TransxactApi from "../../../../index.js";
 /**
  * @example
  *     {
- *         idempotencyKey: "a1b2c3d4-order-9912",
- *         amount: 5000,
- *         currency: "FJD"
+ *         idempotencyKey: "a1b2c3d4-order-9912"
  *     }
  */
 export interface CreateCheckoutSessionRequest {
     /** Client-generated key; a repeated key returns the original session. */
     idempotencyKey: string;
-    /** Amount to charge, in FJD cents (minor units). Must be under FJD 5,000.00 (at most 499999), in Test mode and Live mode alike. */
-    amount: number;
-    /** Always FJD in v1. */
-    currency: TransxactApi.CreateCheckoutSessionRequestCurrency;
+    /** Amount to charge, in FJD cents (minor units). Must be under FJD 5,000.00 (at most 499999), in Test mode and Live mode alike. Send this with `currency`, or send `quote` instead, never both. */
+    amount?: number;
+    /** Always FJD in v1. Required with `amount`. */
+    currency?: TransxactApi.CreateCheckoutSessionRequestCurrency;
+    /** Price the session in USD or AUD instead of sending `amount`. `amount` is in cents of that currency. We convert it to FJD once, now, and lock the rate; the Customer sees and pays FJD only. The converted FJD amount must still be under FJD 5,000.00. Test mode only for now: a Live mode key gets `quote_unavailable_in_live_mode`. Only on Business accounts. */
+    quote?: TransxactApi.CreateCheckoutSessionRequestQuote;
     /** Where the hosted checkout sends the Customer after the payment succeeds. HTTPS only. Transxact appends `session_id=<Checkout Session id>`; confirm the outcome with GET /v1/checkout-sessions/{id} rather than trusting the redirect. */
     successUrl?: string;
     /** Where the hosted checkout sends the Customer if they cancel or the payment doesn't go through. HTTPS only. Transxact appends `session_id=<Checkout Session id>`; confirm the outcome with GET /v1/checkout-sessions/{id} rather than trusting the redirect. */
     cancelUrl?: string;
     /** Up to 20 string key/value pairs (keys ≤40 chars, values ≤500) for matching the session to your own records. Returned on retrieve and in webhooks; never shown to the Customer. Don't put secrets or personal data here. */
     metadata?: Record<string, string>;
+    /** The Customer's email. In Live mode, once the payment succeeds, Transxact emails them a receipt from you (branded with your Display name) unless you've turned receipts off in Settings. We keep the address 30 days after the session ends and never return it. In Test mode it is checked and dropped; nothing is sent. */
+    customerEmail?: string;
     /** Unix ms timestamp, 30 minutes to 24 hours from now, after which the session can't be paid and is cancelled. Defaults to 24 hours. */
     expiresAt?: number;
 }

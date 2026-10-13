@@ -25,6 +25,120 @@ export class CheckoutSessionsClient {
     }
 
     /**
+     * Lists your Checkout Sessions in the key's mode, newest first, so you can reconcile payments without having kept every id. Narrow it with `status` and a `from`/`to` created range. To page, pass the `nextCursor` you got as `cursor` until it is null.
+     *
+     * @param {TransxactApi.ListCheckoutSessionsRequest} request
+     * @param {CheckoutSessionsClient.RequestOptions} requestOptions - Request-specific configuration.
+     *
+     * @throws {@link TransxactApi.BadRequestError}
+     * @throws {@link TransxactApi.UnauthorizedError}
+     * @throws {@link errors.TransxactApiError}
+     * @throws {@link errors.TransxactApiTimeoutError}
+     *
+     * @example
+     *     await client.checkoutSessions.list({
+     *         limit: "10",
+     *         cursor: "1717086400000.cs_3f9c2b1a",
+     *         status: "succeeded",
+     *         from: "1717000000000",
+     *         to: "1717086400000"
+     *     })
+     */
+    public list(
+        request: TransxactApi.ListCheckoutSessionsRequest = {},
+        requestOptions?: CheckoutSessionsClient.RequestOptions,
+    ): core.HttpResponsePromise<TransxactApi.CheckoutSessionList> {
+        return core.HttpResponsePromise.fromPromise(this.__list(request, requestOptions));
+    }
+
+    private async __list(
+        request: TransxactApi.ListCheckoutSessionsRequest = {},
+        requestOptions?: CheckoutSessionsClient.RequestOptions,
+    ): Promise<core.WithRawResponse<TransxactApi.CheckoutSessionList>> {
+        const { limit, cursor, status, from: from_, to } = request;
+        const _queryParams: Record<string, unknown> = {
+            limit,
+            cursor,
+            status,
+            from: from_,
+            to,
+        };
+        const _authRequest: core.AuthRequest = await this._options.authProvider.getAuthRequest();
+        const _headers: core.Fetcher.Args["headers"] = mergeHeaders(
+            _authRequest.headers,
+            this._options?.headers,
+            requestOptions?.headers,
+        );
+        const _response = await core.fetcher({
+            url: core.url.join(
+                (await core.Supplier.get(this._options.baseUrl)) ??
+                    (await core.Supplier.get(this._options.environment)) ??
+                    environments.TransxactApiEnvironment.Production,
+                "v1/checkout-sessions",
+            ),
+            method: "GET",
+            headers: _headers,
+            queryString: core.url
+                .queryBuilder()
+                .addMany(_queryParams)
+                .mergeAdditional(requestOptions?.queryParams)
+                .build(),
+            timeoutMs: (requestOptions?.timeoutInSeconds ?? this._options?.timeoutInSeconds ?? 60) * 1000,
+            maxRetries: requestOptions?.maxRetries ?? this._options?.maxRetries,
+            abortSignal: requestOptions?.abortSignal,
+            fetchFn: this._options?.fetch,
+            logging: this._options.logging,
+        });
+        if (_response.ok) {
+            return {
+                data: serializers.CheckoutSessionList.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
+        }
+
+        if (_response.error.reason === "status-code") {
+            switch (_response.error.statusCode) {
+                case 400:
+                    throw new TransxactApi.BadRequestError(
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
+                        _response.rawResponse,
+                    );
+                case 401:
+                    throw new TransxactApi.UnauthorizedError(
+                        serializers.Error_.parseOrThrow(_response.error.body, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        }),
+                        _response.rawResponse,
+                    );
+                default:
+                    throw new errors.TransxactApiError({
+                        statusCode: _response.error.statusCode,
+                        body: _response.error.body,
+                        rawResponse: _response.rawResponse,
+                    });
+            }
+        }
+
+        return handleNonStatusCodeError(_response.error, _response.rawResponse, "GET", "/v1/checkout-sessions");
+    }
+
+    /**
      * Starts a payment: call this from your server, then redirect the Customer to the returned `hostedUrl`, which takes the payment with any Provider. Don't fulfil on the redirect; wait for the `checkout_session.succeeded` webhook or retrieve the session. The `Idempotency-Key` header is required: a retry with the same key replays the original session instead of creating a second one, so derive it from your order. An `sk_test_` key creates a Test mode session that simulates payment; an `sk_live_` key creates a Live mode session that moves real money.
      *
      * @param {TransxactApi.CreateCheckoutSessionRequest} request
@@ -38,9 +152,7 @@ export class CheckoutSessionsClient {
      *
      * @example
      *     await client.checkoutSessions.create({
-     *         idempotencyKey: "a1b2c3d4-order-9912",
-     *         amount: 5000,
-     *         currency: "FJD"
+     *         idempotencyKey: "a1b2c3d4-order-9912"
      *     })
      */
     public create(

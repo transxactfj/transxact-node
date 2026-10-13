@@ -5,10 +5,111 @@ import { TransxactApiClient } from "../../src/Client";
 import { mockServerPool } from "../mock-server/MockServerPool";
 
 describe("CheckoutSessionsClient", () => {
+    test("list (1)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = {
+            data: [
+                {
+                    id: "cs_3f9c2b1a",
+                    status: "pending",
+                    mode: "test",
+                    amount: 5000,
+                    currency: "FJD",
+                    hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+                    metadata: { orderId: "9912" },
+                    expiresAt: 1717086400000,
+                    invoiceNumber: "invoiceNumber",
+                    quote: { amount: 1, currency: "USD", rate: "rate", asOf: 1 },
+                },
+            ],
+            nextCursor: "1717086400000.cs_3f9c2b1a",
+        };
+
+        server
+            .mockEndpoint()
+            .get("/v1/checkout-sessions")
+            .respondWith()
+            .statusCode(200)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        const response = await client.checkoutSessions.list({
+            limit: "10",
+            cursor: "1717086400000.cs_3f9c2b1a",
+            status: "succeeded",
+            from: "1717000000000",
+            to: "1717086400000",
+        });
+        expect(response).toEqual({
+            data: [
+                {
+                    id: "cs_3f9c2b1a",
+                    status: "pending",
+                    mode: "test",
+                    amount: 5000,
+                    currency: "FJD",
+                    hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
+                    metadata: {
+                        orderId: "9912",
+                    },
+                    expiresAt: 1717086400000,
+                    invoiceNumber: "invoiceNumber",
+                    quote: {
+                        amount: 1,
+                        currency: "USD",
+                        rate: "rate",
+                        asOf: 1,
+                    },
+                },
+            ],
+            nextCursor: "1717086400000.cs_3f9c2b1a",
+        });
+    });
+
+    test("list (2)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .get("/v1/checkout-sessions")
+            .respondWith()
+            .statusCode(400)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.checkoutSessions.list();
+        }).rejects.toThrow(TransxactApi.BadRequestError);
+    });
+
+    test("list (3)", async () => {
+        const server = mockServerPool.createServer();
+        const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
+
+        const rawResponseBody = { error: { code: "code", message: "message" } };
+
+        server
+            .mockEndpoint()
+            .get("/v1/checkout-sessions")
+            .respondWith()
+            .statusCode(401)
+            .jsonBody(rawResponseBody)
+            .build();
+
+        await expect(async () => {
+            return await client.checkoutSessions.list();
+        }).rejects.toThrow(TransxactApi.UnauthorizedError);
+    });
+
     test("create (1)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { amount: 5000, currency: "FJD" };
+        const rawRequestBody = {};
         const rawResponseBody = {
             id: "cs_3f9c2b1a",
             status: "pending",
@@ -18,6 +119,8 @@ describe("CheckoutSessionsClient", () => {
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
             metadata: { orderId: "9912" },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: { amount: 1, currency: "USD", rate: "rate", asOf: 1 },
         };
 
         server
@@ -32,8 +135,6 @@ describe("CheckoutSessionsClient", () => {
 
         const response = await client.checkoutSessions.create({
             idempotencyKey: "a1b2c3d4-order-9912",
-            amount: 5000,
-            currency: "FJD",
         });
         expect(response).toEqual({
             id: "cs_3f9c2b1a",
@@ -46,13 +147,20 @@ describe("CheckoutSessionsClient", () => {
                 orderId: "9912",
             },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: {
+                amount: 1,
+                currency: "USD",
+                rate: "rate",
+                asOf: 1,
+            },
         });
     });
 
     test("create (2)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { amount: 499999, currency: "FJD" };
+        const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
         server
@@ -68,8 +176,6 @@ describe("CheckoutSessionsClient", () => {
         await expect(async () => {
             return await client.checkoutSessions.create({
                 idempotencyKey: "idempotencyKey",
-                amount: 499999,
-                currency: "FJD",
             });
         }).rejects.toThrow(TransxactApi.BadRequestError);
     });
@@ -77,7 +183,7 @@ describe("CheckoutSessionsClient", () => {
     test("create (3)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { amount: 499999, currency: "FJD" };
+        const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
         server
@@ -93,8 +199,6 @@ describe("CheckoutSessionsClient", () => {
         await expect(async () => {
             return await client.checkoutSessions.create({
                 idempotencyKey: "idempotencyKey",
-                amount: 499999,
-                currency: "FJD",
             });
         }).rejects.toThrow(TransxactApi.UnauthorizedError);
     });
@@ -102,7 +206,7 @@ describe("CheckoutSessionsClient", () => {
     test("create (4)", async () => {
         const server = mockServerPool.createServer();
         const client = new TransxactApiClient({ maxRetries: 0, token: "test", environment: server.baseUrl });
-        const rawRequestBody = { amount: 499999, currency: "FJD" };
+        const rawRequestBody = {};
         const rawResponseBody = { error: { code: "code", message: "message" } };
 
         server
@@ -118,8 +222,6 @@ describe("CheckoutSessionsClient", () => {
         await expect(async () => {
             return await client.checkoutSessions.create({
                 idempotencyKey: "idempotencyKey",
-                amount: 499999,
-                currency: "FJD",
             });
         }).rejects.toThrow(TransxactApi.ConflictError);
     });
@@ -137,6 +239,8 @@ describe("CheckoutSessionsClient", () => {
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
             metadata: { orderId: "9912" },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: { amount: 1, currency: "USD", rate: "rate", asOf: 1 },
         };
 
         server
@@ -161,6 +265,13 @@ describe("CheckoutSessionsClient", () => {
                 orderId: "9912",
             },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: {
+                amount: 1,
+                currency: "USD",
+                rate: "rate",
+                asOf: 1,
+            },
         });
     });
 
@@ -219,6 +330,8 @@ describe("CheckoutSessionsClient", () => {
             hostedUrl: "https://transxact.io/c/cs_3f9c2b1a",
             metadata: { orderId: "9912" },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: { amount: 1, currency: "USD", rate: "rate", asOf: 1 },
         };
 
         server
@@ -243,6 +356,13 @@ describe("CheckoutSessionsClient", () => {
                 orderId: "9912",
             },
             expiresAt: 1717086400000,
+            invoiceNumber: "invoiceNumber",
+            quote: {
+                amount: 1,
+                currency: "USD",
+                rate: "rate",
+                asOf: 1,
+            },
         });
     });
 

@@ -5,6 +5,7 @@ import * as core from "../../core/index.js";
 import type * as serializers from "../index.js";
 import { CheckoutSessionCurrency } from "./CheckoutSessionCurrency.js";
 import { CheckoutSessionMode } from "./CheckoutSessionMode.js";
+import { CheckoutSessionQuote } from "./CheckoutSessionQuote.js";
 import { CheckoutSessionStatus } from "./CheckoutSessionStatus.js";
 
 export const CheckoutSession: core.serialization.ObjectSchema<
@@ -19,6 +20,8 @@ export const CheckoutSession: core.serialization.ObjectSchema<
     hostedUrl: core.serialization.string(),
     metadata: core.serialization.record(core.serialization.string(), core.serialization.string()),
     expiresAt: core.serialization.number(),
+    invoiceNumber: core.serialization.string().optional(),
+    quote: CheckoutSessionQuote.optional(),
 });
 
 export declare namespace CheckoutSession {
@@ -31,5 +34,7 @@ export declare namespace CheckoutSession {
         hostedUrl: string;
         metadata: Record<string, string>;
         expiresAt: number;
+        invoiceNumber?: string | null;
+        quote?: CheckoutSessionQuote.Raw | null;
     }
 }

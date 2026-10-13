@@ -4,26 +4,31 @@ import type * as TransxactApi from "../../../../../api/index.js";
 import * as core from "../../../../../core/index.js";
 import type * as serializers from "../../../../index.js";
 import { CreateCheckoutSessionRequestCurrency } from "../../types/CreateCheckoutSessionRequestCurrency.js";
+import { CreateCheckoutSessionRequestQuote } from "../../types/CreateCheckoutSessionRequestQuote.js";
 
 export const CreateCheckoutSessionRequest: core.serialization.Schema<
     serializers.CreateCheckoutSessionRequest.Raw,
     Omit<TransxactApi.CreateCheckoutSessionRequest, "idempotencyKey">
 > = core.serialization.object({
-    amount: core.serialization.number(),
-    currency: CreateCheckoutSessionRequestCurrency,
+    amount: core.serialization.number().optional(),
+    currency: CreateCheckoutSessionRequestCurrency.optional(),
+    quote: CreateCheckoutSessionRequestQuote.optional(),
     successUrl: core.serialization.string().optional(),
     cancelUrl: core.serialization.string().optional(),
     metadata: core.serialization.record(core.serialization.string(), core.serialization.string()).optional(),
+    customerEmail: core.serialization.string().optional(),
     expiresAt: core.serialization.number().optional(),
 });
 
 export declare namespace CreateCheckoutSessionRequest {
     export interface Raw {
-        amount: number;
-        currency: CreateCheckoutSessionRequestCurrency.Raw;
+        amount?: number | null;
+        currency?: CreateCheckoutSessionRequestCurrency.Raw | null;
+        quote?: CreateCheckoutSessionRequestQuote.Raw | null;
         successUrl?: string | null;
         cancelUrl?: string | null;
         metadata?: Record<string, string> | null;
+        customerEmail?: string | null;
         expiresAt?: number | null;
     }
 }
